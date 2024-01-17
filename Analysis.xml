@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<job maxFilesPerProcess="20" simulateSubmission="false" softLimits="true" fileListSyntax="xrootd">
+ 
+  <stdout discard="true" />
+
+  <command>
+    source setDEV2.csh
+    root4star -l -q -b 'analysis.C(99999999,"'"$FILELIST"'","'"$SCRATCH"'","'"$JOBID"'")' &gt;&amp; ${JOBID}.log
+  </command> 
+
+  <SandBox installer="ZIP">
+    <Package>
+      <File>file:/star/u/jballcap/LambdaFluctuationAnalyses/3GeV/RCF/Analysis.xml</File>    <!-- Only so we can print it out ... done above -->
+      <File>file:/star/u/jballcap/LambdaFluctuationAnalyses/3GeV/RCF/analysis.C</File>      <!-- Required -->
+      <File>file:/star/u/jballcap/LambdaFluctuationAnalyses/3GeV/RCF/StRoot</File>          <!-- Required -->
+      <File>file:/star/u/jballcap/LambdaFluctuationAnalyses/3GeV/RCF/lMuDst.C</File>
+      <File>file:/star/u/jballcap/LambdaFluctuationAnalyses/3GeV/RCF/setDEV2.csh</File>   
+      <File>file:/star/u/jballcap/LambdaFluctuationAnalyses/3GeV/RCF/.sl73_x8664_gcc485</File>
+    </Package>
+  </SandBox>
+  
+
+<!-- Use this condor query for 3 GeV -->
+<!--get_file_list.pl -keys path,filename -delim '/' -cond filetype=daq_reco_picoDst,trgsetupname=production_3p85GeV_fixedTarget_2018,tpx=1,filename~st_physics,sanity=1,storage!=hpss -limit 0-->
+<!--runnumber=19153001-->
+
+<!--Here I use the data shared by Yu Zhang for fluctuation analysis-->
+<input URL="catalog:star.bnl.gov?production=P19ie,library=SL20d,trgsetupname=production_3p85GeV_fixedTarget_2018,runnumber[]19153033-19155022,filetype=daq_reco_picoDst,filename~st_physics,storage=local" preferStorage="local" nFiles="200000"/>
+
+<!--This is the original directory for picoDsts used-->
+<!--<input URL="catalog:star.bnl.gov?filetype=daq_reco_picoDst,trgsetupname=production_3p85GeV_fixedTarget_2018,tpx=1,filename~st_physics,sanity=1,storage!=hpss" preferStorage="local" singleCopy="true" nFiles="all" /> --> 
+<!--<input URL="filelist:/star/u/adams92/LambdaPolarizationAnalyses/3GeV/AllPicoDsts.list" nFiles="all" />-->
+
+  <stderr URL="file:/star/data03/scratch/jballcap/DataFxtMult3_BS_Cut_3_nHitsFit_12/$JOBID.err"/>
+  <output fromScratch="*.root" toURL="file:/star/data03/scratch/jballcap/DataFxtMult3_BS_Cut_3_nHitsFit_12/" />
+  <output fromScratch="*.log" toURL="file:/star/data03/scratch/jballcap/DataFxtMult3_BS_Cut_3_nHitsFit_12/" />
+
+  <Generator>
+    <Location>/star/u/jballcap/3GeV_output/extra/</Location>
+    <ReportLocation>/star/u/jballcap/3GeV_output/extra/</ReportLocation>
+  </Generator>
+</job>
